@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+      // enable latest features
+      "lib": ["es2022"],
+      "module": "ES2022",
+      "target": "ES2022",
+  
+      "noEmit": true,
+  
+      // if TS 5.x+
+      "moduleResolution": "Bundler",
+      "moduleDetection": "force",
+  
+      // best practices
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "skipLibCheck": true,
+      "downlevelIteration": true,
+      "allowSyntheticDefaultImports": true
+    },
+    "exclude": ["./external/"]
+  }
+  

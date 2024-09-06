@@ -1,0 +1,25 @@
+services:
+  app:
+    build: .
+    environment:
+      - RABBIT_USER=${RABBIT_USER}
+      - RABBIT_PASS=${RABBIT_PASS}
+      - RABBIT_HOST=rabbitmq
+    restart: always
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672" # management plugin
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBIT_PASS}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+
+volumes:
+  rabbitmq-data:
