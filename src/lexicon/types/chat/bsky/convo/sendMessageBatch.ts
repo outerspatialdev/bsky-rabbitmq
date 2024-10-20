@@ -1,56 +1,56 @@
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
-import { type HeadersMap, XRPCError } from "@atproto/xrpc";
-import { type ValidationResult, BlobRef } from "@atproto/lexicon";
-import { isObj, hasProp } from "../../../../util";
-import { lexicons } from "../../../../lexicons";
-import { CID } from "multiformats/cid";
-import type * as ChatBskyConvoDefs from "./defs";
+import { HeadersMap, XRPCError } from '@atproto/xrpc'
+import { ValidationResult, BlobRef } from '@atproto/lexicon'
+import { isObj, hasProp } from '../../../../util'
+import { lexicons } from '../../../../lexicons'
+import { CID } from 'multiformats/cid'
+import * as ChatBskyConvoDefs from './defs'
 
-export type QueryParams = {};
+export interface QueryParams {}
 
 export interface InputSchema {
-    items: BatchItem[];
-    [k: string]: unknown;
+  items: BatchItem[]
+  [k: string]: unknown
 }
 
 export interface OutputSchema {
-    items: ChatBskyConvoDefs.MessageView[];
-    [k: string]: unknown;
+  items: ChatBskyConvoDefs.MessageView[]
+  [k: string]: unknown
 }
 
 export interface CallOptions {
-    signal?: AbortSignal;
-    headers?: HeadersMap;
-    qp?: QueryParams;
-    encoding?: "application/json";
+  signal?: AbortSignal
+  headers?: HeadersMap
+  qp?: QueryParams
+  encoding?: 'application/json'
 }
 
 export interface Response {
-    success: boolean;
-    headers: HeadersMap;
-    data: OutputSchema;
+  success: boolean
+  headers: HeadersMap
+  data: OutputSchema
 }
 
 export function toKnownErr(e: any) {
-    return e;
+  return e
 }
 
 export interface BatchItem {
-    convoId: string;
-    message: ChatBskyConvoDefs.MessageInput;
-    [k: string]: unknown;
+  convoId: string
+  message: ChatBskyConvoDefs.MessageInput
+  [k: string]: unknown
 }
 
 export function isBatchItem(v: unknown): v is BatchItem {
-    return (
-        isObj(v) &&
-        hasProp(v, "$type") &&
-        v.$type === "chat.bsky.convo.sendMessageBatch#batchItem"
-    );
+  return (
+    isObj(v) &&
+    hasProp(v, '$type') &&
+    v.$type === 'chat.bsky.convo.sendMessageBatch#batchItem'
+  )
 }
 
 export function validateBatchItem(v: unknown): ValidationResult {
-    return lexicons.validate("chat.bsky.convo.sendMessageBatch#batchItem", v);
+  return lexicons.validate('chat.bsky.convo.sendMessageBatch#batchItem', v)
 }

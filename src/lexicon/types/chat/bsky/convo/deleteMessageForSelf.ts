@@ -1,36 +1,36 @@
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
-import { type HeadersMap, XRPCError } from "@atproto/xrpc";
-import { ValidationResult, BlobRef } from "@atproto/lexicon";
-import { isObj, hasProp } from "../../../../util";
-import { lexicons } from "../../../../lexicons";
-import { CID } from "multiformats/cid";
-import type * as ChatBskyConvoDefs from "./defs";
+import { HeadersMap, XRPCError } from '@atproto/xrpc'
+import { ValidationResult, BlobRef } from '@atproto/lexicon'
+import { isObj, hasProp } from '../../../../util'
+import { lexicons } from '../../../../lexicons'
+import { CID } from 'multiformats/cid'
+import * as ChatBskyConvoDefs from './defs'
 
-export type QueryParams = {};
+export interface QueryParams {}
 
 export interface InputSchema {
-    convoId: string;
-    messageId: string;
-    [k: string]: unknown;
+  convoId: string
+  messageId: string
+  [k: string]: unknown
 }
 
-export type OutputSchema = ChatBskyConvoDefs.DeletedMessageView;
+export type OutputSchema = ChatBskyConvoDefs.DeletedMessageView
 
 export interface CallOptions {
-    signal?: AbortSignal;
-    headers?: HeadersMap;
-    qp?: QueryParams;
-    encoding?: "application/json";
+  signal?: AbortSignal
+  headers?: HeadersMap
+  qp?: QueryParams
+  encoding?: 'application/json'
 }
 
 export interface Response {
-    success: boolean;
-    headers: HeadersMap;
-    data: OutputSchema;
+  success: boolean
+  headers: HeadersMap
+  data: OutputSchema
 }
 
 export function toKnownErr(e: any) {
-    return e;
+  return e
 }
