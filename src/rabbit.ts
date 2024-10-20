@@ -1,11 +1,14 @@
 import { ENV } from "./config";
 
 export function getRabbitUrl() {
-    const connectUrl = new URL(`amqp://${ENV.RABBIT_HOST}`);
-    connectUrl.port = ENV.RABBIT_PORT.toString();
-    connectUrl.pathname = ENV.RABBIT_VHOST;
-    connectUrl.username = ENV.RABBIT_USER;
-    connectUrl.password = ENV.RABBIT_PASS;
+    const user = encodeURIComponent(ENV.RABBIT_USER);
+    const pass = encodeURIComponent(ENV.RABBIT_PASS);
 
-    return connectUrl.toString();
+    const url = new URL(`amqp://${ENV.RABBIT_HOST}`);
+    url.port = ENV.RABBIT_PORT.toString();
+    url.pathname = ENV.RABBIT_VHOST;
+    url.username = user;
+    url.password = pass;
+
+    return url;
 }

@@ -1,16 +1,15 @@
-import amqp from "amqplib";
-import { LOGGER } from "../logger";
-import { v4 as uuid } from "uuid";
-import { getRabbitUrl } from "../rabbit";
-import { PostCreatedSchema } from "../bsky/post";
+import { Agent, CredentialSession } from "@atproto/api";
 import { DidResolver, HandleResolver, MemoryCache } from "@atproto/identity";
-import { CredentialSession } from "@atproto/api";
-import { Agent } from "@atproto/api";
+import amqp from "amqplib";
+import { v4 as uuid } from "uuid";
+import { PostCreatedSchema } from "../bsky/post";
 import { ENV } from "../config";
 import { ProfileCache } from "../helpers/profile-cache";
+import { LOGGER } from "../logger";
+import { getRabbitUrl } from "../rabbit";
 
 const connectUrl = getRabbitUrl();
-const connection = await amqp.connect(connectUrl);
+const connection = await amqp.connect(connectUrl.toString());
 const channel = await connection.createChannel();
 const firehoseExchange = ENV.RABBIT_FIREHOSE_EXCHANGE;
 
