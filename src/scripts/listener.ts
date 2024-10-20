@@ -2,7 +2,7 @@ import { Agent, CredentialSession } from "@atproto/api";
 import { DidResolver, HandleResolver, MemoryCache } from "@atproto/identity";
 import amqp from "amqplib";
 import { v4 as uuid } from "uuid";
-import { PostCreatedSchema } from "../bsky/post";
+import { PostCreatedSchema } from "../bsky/ops";
 import { ENV } from "../config";
 import { ProfileCache } from "../helpers/profile-cache";
 import { LOGGER } from "../logger";
@@ -26,7 +26,10 @@ const didResolver = new DidResolver({
 });
 const handleResolver = new HandleResolver({});
 
-const session = new CredentialSession(new URL(ENV.BSKY_SERVICE_URL));
+const bskyUrl = URL.parse(ENV.BSKY_SERVICE_URL);
+if (!bskyUrl) throw new Error("Invalid BSKY_SERVICE_URL");
+
+const session = new CredentialSession(bskyUrl as URL);
 const agent = new Agent(session);
 
 await session.login({

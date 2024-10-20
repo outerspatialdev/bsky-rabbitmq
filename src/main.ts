@@ -1,5 +1,5 @@
 import { ENV } from "./config";
-import { Firehose, getOpsByType } from "./helpers/firehose";
+import { type CreateOp, Firehose, getOpsByType } from "./helpers/firehose";
 import { LOGGER } from "./logger";
 
 import { DidResolver, MemoryCache } from "@atproto/identity";
@@ -7,14 +7,20 @@ import amqp from "amqplib";
 import type {
     FollowCreated,
     FollowDeleted,
+    Image,
     LikeCreated,
     LikeDeleted,
     PostCreated,
     PostDeleted,
+    Reply,
     RepostCreated,
     RepostDeleted,
-} from "./bsky/post";
+} from "./bsky/ops";
 import { getRabbitUrl } from "./rabbit";
+
+import { getFeedFullsizeUrl, getFeedThumbnailUrl } from "./bsky/images";
+import { AppBskyEmbedImages } from "./lexicon";
+import type { Record as PostRecord } from "./lexicon/types/app/bsky/feed/post";
 
 const connectUrl = getRabbitUrl();
 LOGGER.debug(`Connecting to RabbitMQ at ${connectUrl}`);
@@ -49,6 +55,60 @@ setInterval(() => {
     });
 }, 10000);
 
+function parsePostCreated(op: CreateOp<PostRecord>): PostCreated {
+    const images: Image[] = [];
+
+    if (AppBskyEmbedImages.isMain(op.record.embed)) {
+        for (const image of op.record.embed.images) {
+            const imgCid = image.image.ref.toString();
+
+            if (!image.aspectRatio) {
+                LOGGER.warn({ image }, "No aspect ratio");
+            }
+
+            images.push({
+                alt: image.alt,
+                fullsizeUrl: getFeedFullsizeUrl(
+                    op.author,
+                    imgCid,
+                    image.image.mimeType,
+                ),
+                thumbnailUrl: getFeedThumbnailUrl(
+                    op.author,
+                    imgCid,
+                    image.image.mimeType,
+                ),
+                mime: image.image.mimeType,
+                size: image.image.size,
+                width: image.aspectRatio?.width ?? 0,
+                height: image.aspectRatio?.height ?? 0,
+            });
+        }
+    }
+
+    let reply: Reply | undefined;
+
+    if (op.record.reply) {
+        reply = {
+            root: op.record.reply.root,
+            parent: op.record.reply.parent,
+        };
+    }
+
+    return {
+        op: "post.create",
+        cid: op.cid,
+        uri: op.uri,
+        text: op.record.text,
+        author: op.author,
+        createdAt: op.record.createdAt,
+        langs: op.record.langs ?? [],
+        data: op,
+        images: images.length > 0 ? images : undefined,
+        reply,
+    };
+}
+
 const firehose = new Firehose({
     service: ENV.BSKY_FIREHOSE_URL,
     handler: async (evt) => {
@@ -57,15 +117,7 @@ const firehose = new Firehose({
 
         opCount += opsByType.posts.creates.length;
         for (const op of opsByType.posts.creates) {
-            const data = {
-                op: "post.create",
-                uri: op.uri,
-                text: op.record.text,
-                author: op.author,
-                createdAt: op.record.createdAt,
-                langs: op.record.langs ?? [],
-                data: op,
-            } satisfies PostCreated;
+            const data = parsePostCreated(op);
             channel.publish(
                 firehoseExchange,
                 "post.create",

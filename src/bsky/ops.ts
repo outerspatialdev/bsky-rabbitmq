@@ -7,14 +7,43 @@ export const BaseOpSchema = z.object({
     data: z.any(),
 });
 
+export const ImageSchema = z.object({
+    mime: z.string(),
+    alt: z.string(),
+    fullsizeUrl: z.string(),
+    thumbnailUrl: z.string(),
+    size: z.number(),
+    width: z.number(),
+    height: z.number(),
+});
+
+export type Image = z.infer<typeof ImageSchema>;
+
+export const ReplySchema = z.object({
+    root: z.object({
+        cid: z.string(),
+        uri: z.string(),
+    }),
+    parent: z.object({
+        cid: z.string(),
+        uri: z.string(),
+    }),
+});
+
+export type Reply = z.infer<typeof ReplySchema>;
+
 // #region Post
 export const PostCreatedSchema = BaseOpSchema.extend({
     op: z.literal("post.create"),
 
+    cid: z.string(),
     text: z.string(),
     author: z.string(),
     createdAt: z.string(),
     langs: z.array(z.string()),
+
+    images: z.array(ImageSchema).optional(),
+    reply: ReplySchema.optional(),
 });
 
 export const PostDeletedSchema = BaseOpSchema.extend({

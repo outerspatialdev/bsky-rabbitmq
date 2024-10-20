@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    environment:
+      - RABBIT_USER=${RABBIT_USER}
+      - RABBIT_PASS=${RABBIT_PASS}
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
+      - RABBIT_VHOST=${RABBIT_VHOST}
+      - BSKY_IDENTIFIER=${BSKY_IDENTIFIER}
+      - BSKY_PASSWORD=${BSKY_PASSWORD}
+    restart: always

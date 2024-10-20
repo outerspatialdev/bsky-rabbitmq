@@ -5,7 +5,7 @@ export function getRabbitUrl() {
     const pass = encodeURIComponent(ENV.RABBIT_PASS);
 
     const url = new URL(`amqp://${ENV.RABBIT_HOST}`);
-    url.port = ENV.RABBIT_PORT.toString();
+    url.port = ENV.RABBIT_PORT;
     url.pathname = ENV.RABBIT_VHOST;
     url.username = user;
     url.password = pass;
